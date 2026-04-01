@@ -1,4 +1,4 @@
-# Astrofy | Personal Portfolio Website Template
+# Astrofy | Personal Portfolio Website Template 2
 
 ![Astrofy | Personal Porfolio Website Template](public/social_img.webp)
 
