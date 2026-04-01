@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HorizontalCard from "../components/HorizontalCard.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const last3Posts = posts.slice(0, 3);
+---
+
+<BaseLayout sideBarActiveItemID="home">
+  <div class="pb-12 mt-5">
+    <div class="text-center py-8 hero-gradient">
+      <div class="avatar mb-4">
+        <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 mx-auto">
+          <img src="/profile.jpg" alt="李文慧" />
+        </div>
+      </div>
+      <p class="text-sm text-base-content/60">你好，我是</p>
+      <h1 class="text-4xl font-bold mt-2">李文慧</h1>
+      <p class="text-lg mt-4 leading-relaxed">
+        6年 C 端增长 + 商业化实战经验<br/>
+        正在将增长方法论带入 AI 产品赛道
+      </p>
+      <div class="flex items-center justify-center gap-2 mt-3 text-sm text-base-content/50 flex-wrap">
+        <div class="flex items-center gap-1">
+          <img src="/logos/pdd.svg" alt="拼多多" class="w-4 h-4" />
+          <span>拼多多/TEMU</span>
+        </div>
+        <span>·</span>
+        <div class="flex items-center gap-1">
+          <img src="/logos/meitu.svg" alt="美图" class="w-4 h-4" />
+          <span>美图秀秀</span>
+        </div>
+        <span>·</span>
+        <div class="flex items-center gap-1">
+          <img src="/logos/luckin.svg" alt="瑞幸" class="w-4 h-4" />
+          <span>瑞幸咖啡</span>
+        </div>
+      </div>
+      <div class="flex gap-2 justify-center mt-4 flex-wrap">
+        <span class="badge badge-primary badge-outline">效果广告</span>
+        <span class="badge badge-primary badge-outline">订阅商业化</span>
+        <span class="badge badge-primary badge-outline">出海增长</span>
+      </div>
+      <div class="flex gap-3 justify-center mt-6">
+        <a href="/contact" class="btn btn-primary btn-sm">联系我</a>
+        <a href="/cv" class="btn btn-outline btn-sm">查看简历</a>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="text-2xl font-bold mb-4">最新 AI 洞察</div>
+    {last3Posts.map((post) => (
+      <>
+        <HorizontalCard
+          title={post.data.title}
+          img={post.data.heroImage}
+          desc={post.data.description}
+          url={"/blog/" + (post.slug || post.id)}
+          badge={post.data.badge}
+          tags={post.data.tags}
+        />
+        <div class="divider my-0" />
+      </>
+    ))}
+  </div>
+</BaseLayout>

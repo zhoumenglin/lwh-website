@@ -1,0 +1,12 @@
+---
+const { sideBarActiveItemID } = Astro.props;
+const activeClass = "bg-base-300";
+---
+<ul class="menu grow shrink menu-md overflow-y-auto">
+  <li><a id="home" class={sideBarActiveItemID === "home" ? activeClass : ""} href="/">首页</a></li>
+  <li><a id="projects" class={sideBarActiveItemID === "projects" ? activeClass : ""} href="/projects">项目经历</a></li>
+  <li><a id="blog" class={sideBarActiveItemID === "blog" ? activeClass : ""} href="/blog">AI 洞察</a></li>
+  <li><a id="skills" class={sideBarActiveItemID === "skills" ? activeClass : ""} href="/skills">技能</a></li>
+  <li><a id="cv" class={sideBarActiveItemID === "cv" ? activeClass : ""} href="/cv">简历</a></li>
+  <li><a id="contact" class={sideBarActiveItemID === "contact" ? activeClass : ""} href="/contact">联系方式</a></li>
+</ul>

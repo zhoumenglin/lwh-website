@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+/* Timeline last-child fix */
+.time-line-container>div:last-child .education__time>.education__line {
+  display: none;
+}
+
+/* Refined typography */
+body {
+  font-family: 'Noto Sans SC', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .text-3xl, .text-4xl {
+  font-family: 'Noto Serif SC', serif;
+  letter-spacing: 0.02em;
+}
+
+/* Subtle page entrance animation */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawer-content main {
+  animation: fadeSlideUp 0.5s ease-out;
+}
+
+/* Hero section gradient bg */
+.hero-gradient {
+  background: linear-gradient(135deg,
+    oklch(0.95 0.02 330) 0%,
+    oklch(0.97 0.01 270) 50%,
+    oklch(0.96 0.015 220) 100%
+  );
+  border-radius: 1.5rem;
+  padding: 2.5rem 1.5rem;
+}
+
+/* Card hover effects */
+.collapse {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  border: 1px solid oklch(0.92 0.01 300);
+}
+
+.collapse:hover {
+  box-shadow: 0 4px 20px oklch(0.85 0.03 300 / 0.3);
+  transform: translateY(-1px);
+}
+
+/* Tag cloud enhanced */
+.tag-cloud-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tag-cloud-item:hover {
+  box-shadow: 0 2px 12px oklch(0.7 0.1 300 / 0.2);
+}
+
+/* Timeline enhanced dots */
+.timeline-dot {
+  box-shadow: 0 0 0 4px oklch(0.9 0.04 300);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Contact card hover lift */
+.contact-card {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.contact-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px oklch(0.85 0.03 300 / 0.2);
+  border-color: oklch(0.85 0.05 300);
+}
+
+/* Blog card links subtle hover */
+a .card {
+  transition: transform 0.2s ease;
+}
+
+a:hover .card {
+  transform: translateY(-2px);
+}
+
+/* Sidebar refinement */
+.drawer-side {
+  border-right: 1px solid oklch(0.93 0.01 300);
+}
+
+/* Badge refinement */
+.badge-outline {
+  border-width: 1.5px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsive refinements */
+@media (max-width: 1024px) {
+  .hero-gradient {
+    padding: 1.5rem 1rem;
+    border-radius: 1rem;
+  }
+}

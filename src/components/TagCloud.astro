@@ -1,0 +1,28 @@
+---
+interface Tag {
+  label: string;
+  size: "xl" | "lg" | "md" | "sm" | "xs";
+  logo?: string;
+}
+interface Props {
+  tags: Tag[];
+}
+const { tags } = Astro.props;
+
+const sizeClasses = {
+  xl: "text-lg px-5 py-2.5 font-bold bg-primary text-primary-content",
+  lg: "text-base px-4 py-2 font-semibold bg-primary/80 text-primary-content",
+  md: "text-sm px-3 py-1.5 bg-primary/60 text-primary-content",
+  sm: "text-xs px-3 py-1.5 bg-primary/40 text-primary-content",
+  xs: "text-xs px-2.5 py-1 bg-primary/20 text-primary-content/80"
+};
+---
+
+<div class="flex flex-wrap gap-3 justify-center">
+  {tags.map((tag) => (
+    <span class={`tag-cloud-item inline-flex items-center gap-1.5 rounded-full transition-transform hover:scale-105 ${sizeClasses[tag.size]}`}>
+      {tag.logo && <img src={tag.logo} alt={tag.label} class="w-4 h-4" />}
+      {tag.label}
+    </span>
+  ))}
+</div>

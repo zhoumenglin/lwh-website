@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TimeLineElement from "../components/cv/TimeLine.astro";
+---
+
+<BaseLayout sideBarActiveItemID="cv">
+  <div class="pb-12 mt-5">
+    <div class="text-3xl font-bold mb-2">简历</div>
+    <p class="text-base-content/60 mb-6">李文慧 · AI 产品经理（商业化/增长方向）</p>
+
+    <div class="mb-8">
+      <div class="text-2xl font-bold mb-3">个人优势</div>
+      <ul class="list-disc list-inside space-y-2 text-sm">
+        <li><strong>从业背景：</strong>6年+互联网产品经理工作经历，在C端增长、效果广告投放（Facebook Ads/ROAS优化）、订阅制商业化、出海增长等领域有丰富实操经验。曾主导会员体系从0到1搭建（付费收入提升40%+）、管理日花费万美元级广告投放（ROAS稳定100%+）、搭建订阅中台（新产品接入周期缩短50%）。</li>
+        <li><strong>专业优势：</strong>有从0到1的海外用户增长经验（TEMU欧洲区），有从0到1搭建并落地会员/订阅体系的完整经验（美图秀秀），数据分析和洞察力强，善于基于数据构建A/B测试实验体系。</li>
+        <li><strong>AI产品认知：</strong>持续关注AI行业发展，深度理解大模型、AI Agent、多模态等核心技术对产品形态和商业模式的影响；熟悉国内外主流AI产品的产品逻辑和变现策略。</li>
+        <li><strong>综合素养：</strong>共情力强，擅长用户痛点挖掘与需求洞察；带过4-6人团队，跨部门沟通和资源协调能力强；责任心和执行力强，强结果导向。</li>
+      </ul>
+    </div>
+
+    <div class="mb-8">
+      <div class="text-2xl font-bold mb-3">工作经历</div>
+      <TimeLineElement title="拼多多 & TEMU · 产品经理" subtitle="2022.09 - 2025.08">
+        C端增长产品经理。国内业务负责搜索场景全链路功能建设；海外业务带领4-6人团队负责TEMU欧洲区Facebook广告投放策略、活动玩法与用户转化体系。连续三年绩效优秀。
+      </TimeLineElement>
+      <TimeLineElement title="美图秀秀 · 产品经理" subtitle="2020.07 - 2022.09">
+        影像商业产品部产品经理，主导美图秀秀APP「会员体系」从0到1搭建及订阅中台建设。连续两年绩效A，获「优秀员工」称号。
+      </TimeLineElement>
+      <TimeLineElement title="瑞幸咖啡 · 产品经理" subtitle="2019.04 - 2020.06">
+        负责瑞幸咖啡APP营销体系搭建（营销系统、订单系统）和付费会员体系设计。年度绩效A，获「优秀员工」称号。
+      </TimeLineElement>
+    </div>
+
+    <div class="mb-8">
+      <div class="text-2xl font-bold mb-3">教育背景</div>
+      <TimeLineElement title="太原理工大学（211）" subtitle="2015.09 - 2019.07">
+        软件工程专业 · 本科（学士）
+      </TimeLineElement>
+    </div>
+
+    <div class="mb-8">
+      <div class="text-2xl font-bold mb-3">技能证书</div>
+      <ul class="list-disc list-inside space-y-1 text-sm">
+        <li><strong>专业水平：</strong>PMP项目管理证书、教师资格证（高中英语）</li>
+        <li><strong>语言水平：</strong>CET-6，良好的英语听说读写能力</li>
+        <li><strong>计算机水平：</strong>Office（计算机二级）、网络技术（计算机三级），熟练使用Axure、Sketch、Figma、Xmind、Visio等原型工具及JIRA、Project等项目管理工具</li>
+        <li><strong>AI工具：</strong>熟练使用ChatGPT/Claude/豆包/Kimi等AI助手；了解Prompt Engineering方法论；关注AI Agent、多模态等前沿技术方向</li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

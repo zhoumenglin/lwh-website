@@ -1,0 +1,24 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  colorClass: string;
+  details: string[];
+}
+const { title, summary, colorClass, details } = Astro.props;
+---
+
+<div class="collapse collapse-arrow bg-base-200 mb-3">
+  <input type="checkbox" />
+  <div class="collapse-title">
+    <div class:list={["font-semibold", colorClass]}>{title}</div>
+    <p class="text-sm text-base-content/60 mt-1">{summary}</p>
+  </div>
+  <div class="collapse-content">
+    <ul class="list-disc list-inside space-y-2 text-sm">
+      {details.map((d) => (
+        <li set:html={d} />
+      ))}
+    </ul>
+  </div>
+</div>

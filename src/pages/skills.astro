@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TagCloud from "../components/TagCloud.astro";
+
+const tags = [
+  { label: "C端增长", size: "xl" as const },
+  { label: "效果广告投放", size: "xl" as const },
+  { label: "订阅商业化", size: "xl" as const },
+  { label: "数据分析", size: "lg" as const },
+  { label: "A/B Testing", size: "lg" as const },
+  { label: "用户分层", size: "lg" as const },
+  { label: "出海增长", size: "lg" as const },
+  { label: "ROAS 优化", size: "md" as const },
+  { label: "eCPM 竞价", size: "md" as const },
+  { label: "Prompt Engineering", size: "md" as const },
+  { label: "ChatGPT", size: "sm" as const, logo: "/logos/chatgpt.svg" },
+  { label: "Claude", size: "sm" as const, logo: "/logos/claude.svg" },
+  { label: "豆包", size: "sm" as const, logo: "/logos/doubao.svg" },
+  { label: "Kimi", size: "sm" as const, logo: "/logos/kimi.svg" },
+  { label: "Figma", size: "sm" as const, logo: "/logos/figma.svg" },
+  { label: "Axure", size: "sm" as const, logo: "/logos/axure.svg" },
+  { label: "Sketch", size: "sm" as const, logo: "/logos/sketch.svg" },
+  { label: "Xmind", size: "sm" as const, logo: "/logos/xmind.svg" },
+  { label: "Visio", size: "sm" as const, logo: "/logos/visio.svg" },
+  { label: "JIRA", size: "sm" as const, logo: "/logos/jira.svg" },
+  { label: "HTML/CSS/JS", size: "xs" as const },
+  { label: "SQL", size: "xs" as const },
+  { label: "PMP", size: "xs" as const },
+  { label: "CET-6", size: "xs" as const },
+];
+---
+
+<BaseLayout sideBarActiveItemID="skills">
+  <div class="pb-12 mt-5">
+    <div class="text-3xl font-bold mb-2">技能与工具</div>
+    <p class="text-base-content/60 mb-8">标签越大越深 = 越核心</p>
+    <TagCloud tags={tags} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,104 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CompanyTimeline from "../components/CompanyTimeline.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+
+const companies = [
+  {
+    period: "2022.09 - 2025.08",
+    company: "拼多多 & TEMU",
+    logo: "/logos/pdd.svg",
+    role: "C端增长产品经理 · 搜索增长 & 欧区广告投放"
+  },
+  {
+    period: "2020.07 - 2022.09",
+    company: "美图秀秀",
+    logo: "/logos/meitu.svg",
+    role: "影像商业产品经理 · 会员体系从0到1 & 订阅中台"
+  },
+  {
+    period: "2019.04 - 2020.06",
+    company: "瑞幸咖啡",
+    logo: "/logos/luckin.svg",
+    role: "产品经理 · 营销体系 & 付费会员搭建"
+  }
+];
+
+const projects = [
+  {
+    title: "广告投放与 ROI 优化",
+    summary: "TEMU 欧区 Facebook 广告 · ROAS 100%+ · 日花费 $10K+",
+    colorClass: "text-primary",
+    details: [
+      "构建以 ROAS 出价为核心的出价体系，<strong>单条头部广告日花费 $10,000+，ROAS 稳定 100%+</strong>",
+      "建立 ASC 底层兜底 + 定向广告补充的广告架构，控制同系列广告 ≤5 条，避免内耗",
+      "基于 eCPM 竞价逻辑持续优化 CTR、CVR、ROI，通过分时漏斗和诊断看板实时监控",
+      "头部广告复制组策略快速放大（预算提升至日均 5-10 倍），尾部广告 2-3 天无起色即关停",
+      "落地页策略优化，<strong>激活率提升至 12%+，UV 转化率提升 5.18%</strong>",
+      "大转盘、Free Gift 等互动玩法，<strong>支付 UV 提升 15.31%，人均 GMV 增长 28.99%</strong>"
+    ]
+  },
+  {
+    title: "订阅商业化",
+    summary: "美图会员体系 · 付费收入 +40% · 订阅中台搭建",
+    colorClass: "text-secondary",
+    details: [
+      "主导美图秀秀 APP 会员体系从 0 到 1 搭建（支付、权益、等级、管理）",
+      "14 层用户精细化分层 + 5 项订阅引导策略，<strong>会员转化率提升 20%+，付费收入提升 40%+</strong>",
+      "支付宝外显策略，<strong>支付宝付费占比提高 28%+，年收入提升 1000 万元+</strong>",
+      "会员召回策略（挽留弹窗 + 过期限免），<strong>召回率从 2% 提升至 10%+</strong>",
+      "从 0 到 1 搭建订阅中台（5 大模块），<strong>新 APP 接入周期从 1 个月缩短为 2 周</strong>",
+      "节日活动合辑工具，B 端 20 分钟上线全年活动，<strong>为大盘新增年收入 20%+</strong>"
+    ]
+  },
+  {
+    title: "搜索增长",
+    summary: "拼多多搜索 · GMV +13.68% · 全链路优化",
+    colorClass: "text-accent",
+    details: [
+      "优化搜索推荐词刷新机制，<strong>GMV 提升 13.68%，订单量提升 11.54%</strong>",
+      "推动商品标题结构化展示（品牌 + 卖点 + 价格区间），GMV 提升 0.3%",
+      "主导图搜「月销量排序」策略，<strong>图搜 GMV 提升 0.42%</strong>",
+      "店铺评价页「搜同款」功能，<strong>全站收入提升 0.75%，支付 GMV 提升 0.64%</strong>",
+      "购后推荐搭配模块，<strong>GMV 提升 0.41%，订单量提升 0.31%</strong>",
+      "搜索结果页「再次拼单」按钮，全站收入提升 0.19%"
+    ]
+  },
+  {
+    title: "出海增长",
+    summary: "TEMU 欧洲区 · 激活率 12%+ · 跨文化本地化",
+    colorClass: "text-info",
+    details: [
+      "负责 TEMU 欧洲区广告落地页策略，<strong>激活率提升至 12%+，UV 转化率提升 5.18%</strong>",
+      "购物车拦截策略（软/硬拦截），<strong>支付率提升 8.71%，GMV 增长 10.24%</strong>",
+      "支付页利益点外显（包邮、百元券），<strong>GMV 提升 5%/天</strong>",
+      "活动商品与发券策略调优，<strong>人均 GMV 提升 5.94%，总支付用户数提升 2.57%</strong>",
+      "端外落地页下载条优化，<strong>日均曝光 UV 千万级，互动率提升 20%+</strong>",
+      "跨文化本地化运营（Email、App Push、SMS、WhatsApp 多渠道触达）"
+    ]
+  }
+];
+---
+
+<BaseLayout sideBarActiveItemID="projects">
+  <div class="pb-12 mt-5">
+    <div class="text-3xl font-bold mb-6">项目经历</div>
+
+    <div class="mb-10">
+      <div class="text-xl font-semibold mb-4">职业历程</div>
+      <CompanyTimeline items={companies} />
+    </div>
+
+    <div>
+      <div class="text-xl font-semibold mb-4">核心项目</div>
+      {projects.map((p) => (
+        <ProjectCard
+          title={p.title}
+          summary={p.summary}
+          colorClass={p.colorClass}
+          details={p.details}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
