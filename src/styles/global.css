@@ -645,3 +645,107 @@ html, body {
     border-radius: 1rem;
   }
 }
+
+@media (max-width: 768px) {
+  /* Home two-column → single column */
+  .home-sections {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Hero text smaller */
+  .shimmer-text {
+    font-size: 2rem !important;
+  }
+
+  /* Insight title truncate */
+  .home-insight-title {
+    font-size: 0.78rem;
+  }
+
+  .home-insight-badge {
+    min-width: 2.2rem;
+    font-size: 0.55rem;
+    padding: 0.1rem 0.3rem;
+  }
+
+  /* Card text overflow */
+  .card-row .hero-content {
+    padding: 0.75rem;
+  }
+
+  /* Sidebar icon smaller */
+  .sidebar-link {
+    gap: 0.45rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Even tighter on small phones */
+  .home-section__title {
+    font-size: 1rem;
+  }
+
+  .home-insight-item {
+    gap: 0.5rem;
+    padding: 0.55rem 0.5rem;
+  }
+
+  .home-insight-num {
+    font-size: 0.6rem;
+    width: 1rem;
+  }
+
+  .home-insight-title {
+    font-size: 0.72rem;
+  }
+
+  /* Lab card */
+  .home-lab-card__cover {
+    height: 5.5rem;
+  }
+
+  .home-lab-card__title {
+    font-size: 0.82rem;
+  }
+
+  /* Carousel arrows */
+  .carousel-arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Global text overflow safety */
+.home-insight-title,
+.home-lab-card__title,
+.home-lab-card__desc,
+.card-badge,
+.card-tag-link,
+.skill-item__label,
+.contact-item__value,
+.cv-exp__role,
+.cv-highlight-card__text,
+.lab-card__title,
+.lab-card__summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Single-line truncation where needed */
+.home-insight-title,
+.contact-item__value,
+.skill-item__label {
+  white-space: nowrap;
+}
+
+/* Multi-line truncation */
+.home-lab-card__desc,
+.cv-highlight-card__text,
+.lab-card__summary,
+.cv-exp__role {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

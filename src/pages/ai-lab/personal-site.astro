@@ -910,8 +910,20 @@ const highlights = [
   }
 
   @media (max-width: 640px) {
+    .case-title {
+      font-size: 1.5rem;
+    }
+    .case-subtitle {
+      font-size: 0.82rem;
+    }
     .case-highlights {
       grid-template-columns: repeat(2, 1fr);
+    }
+    .case-highlight__num {
+      font-size: 1.3rem;
+    }
+    .case-section__title {
+      font-size: 1rem;
     }
     .case-step {
       flex-direction: column;
@@ -921,8 +933,29 @@ const highlights = [
       flex-direction: row;
       width: auto;
     }
+    .case-compare {
+      grid-template-columns: 1fr;
+    }
+    .chat-bubble {
+      max-width: 90%;
+      font-size: 0.72rem;
+    }
     .case-nav {
       grid-template-columns: 1fr;
+    }
+    .case-decision__what {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .case-stack-item {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .case-stack-item__name {
+      min-width: auto;
+    }
+    .dev-review {
+      padding: 1rem;
     }
   }
 </style>
