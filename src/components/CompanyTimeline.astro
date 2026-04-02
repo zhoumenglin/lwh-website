@@ -11,16 +11,16 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="relative pl-8 border-l-2 border-primary/30">
+<div class="relative pl-8 border-l-2 border-primary/20">
   {items.map((item, i) => (
     <div class={`relative pb-8 ${i === items.length - 1 ? 'pb-0' : ''}`}>
-      <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-primary border-2 border-base-100"></div>
-      <div class="flex items-center gap-3 flex-wrap">
-        <img src={item.logo} alt={item.company} class="w-6 h-6" />
-        <span class="font-bold text-sm">{item.period}</span>
+      <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-primary/60 border-2 border-base-100"></div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-sm font-bold">{item.period}</span>
+        <span class="text-base-content/30">·</span>
         <span class="text-base font-semibold">{item.company}</span>
       </div>
-      <p class="text-sm text-base-content/60 mt-1 ml-9">{item.role}</p>
+      <p class="text-sm text-base-content/45 mt-1">{item.role}</p>
     </div>
   ))}
 </div>

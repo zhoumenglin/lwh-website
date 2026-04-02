@@ -1,0 +1,233 @@
+---
+interface Tag {
+  label: string;
+  size: "xl" | "lg" | "md" | "sm" | "xs";
+  logo?: string;
+}
+interface Props {
+  tags: Tag[];
+}
+const { tags } = Astro.props;
+
+const sizeRadius: Record<string, number> = {
+  xl: 90,
+  lg: 75,
+  md: 62,
+  sm: 52,
+  xs: 44,
+};
+---
+
+<div class="bubble-cloud-wrapper">
+  <div class="bubble-cloud" id="bubble-cloud">
+    {tags.map((tag, i) => (
+      <div
+        class={`bubble bubble-${tag.size}`}
+        data-radius={sizeRadius[tag.size]}
+        data-index={i}
+      >
+        {tag.logo && <img src={tag.logo} alt="" class="bubble-logo" />}
+        <span class="bubble-label">{tag.label}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const container = document.getElementById('bubble-cloud');
+    if (!container) return;
+
+    const bubbles = Array.from(container.querySelectorAll('.bubble')) as HTMLElement[];
+    if (bubbles.length === 0) return;
+
+    // Get the main content area width
+    const main = document.querySelector('main');
+    const availableWidth = main ? main.clientWidth : window.innerWidth - 40;
+    const containerSize = availableWidth;
+    const cx = containerSize / 2;
+    const cy = containerSize / 2;
+    const containerRadius = containerSize / 2 - 5;
+
+    container.style.width = containerSize + 'px';
+    container.style.height = containerSize + 'px';
+
+    console.log('Bubble cloud size:', containerSize);
+
+    interface BubbleData {
+      el: HTMLElement;
+      r: number;
+      x: number;
+      y: number;
+    }
+
+    const data: BubbleData[] = bubbles.map((el) => {
+      const r = parseInt(el.dataset.radius || '38');
+      // Scale radii relative to container size
+      const scaledR = r * (containerSize / 400);
+      return { el, r: scaledR, x: cx, y: cy };
+    });
+
+    // Sort largest first for placement
+    data.sort((a, b) => b.r - a.r);
+
+    function placeBubbles() {
+      const placed: BubbleData[] = [];
+
+      for (const bubble of data) {
+        let bestX = cx;
+        let bestY = cy;
+        let found = false;
+
+        // Spiral outward to find a spot
+        for (let angle = 0; angle < Math.PI * 40; angle += 0.1) {
+          const spiralR = angle * 2.8;
+          const tx = cx + Math.cos(angle) * spiralR;
+          const ty = cy + Math.sin(angle) * spiralR;
+
+          // Must stay inside the big circle
+          const distFromCenter = Math.sqrt((tx - cx) ** 2 + (ty - cy) ** 2);
+          if (distFromCenter + bubble.r > containerRadius) continue;
+
+          // No overlap
+          let overlaps = false;
+          for (const p of placed) {
+            const dist = Math.sqrt((tx - p.x) ** 2 + (ty - p.y) ** 2);
+            if (dist < bubble.r + p.r + 3) {
+              overlaps = true;
+              break;
+            }
+          }
+
+          if (!overlaps) {
+            bestX = tx;
+            bestY = ty;
+            found = true;
+            break;
+          }
+        }
+
+        bubble.x = bestX;
+        bubble.y = bestY;
+        placed.push(bubble);
+      }
+    }
+
+    placeBubbles();
+
+    // Apply positions with staggered entrance
+    data.forEach((b, i) => {
+      b.el.style.width = b.r * 2 + 'px';
+      b.el.style.height = b.r * 2 + 'px';
+      b.el.style.left = (b.x - b.r) + 'px';
+      b.el.style.top = (b.y - b.r) + 'px';
+      b.el.style.animationDelay = (i * 0.05) + 's';
+      b.el.classList.add('bubble-appear');
+    });
+  });
+</script>
+
+<style>
+  .bubble-cloud-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+
+  .bubble-cloud {
+    position: relative;
+    border-radius: 50%;
+    background: radial-gradient(circle, oklch(0.97 0.012 190 / 0.5) 0%, oklch(0.98 0.008 195 / 0.15) 65%, transparent 100%);
+    border: 1.5px solid oklch(0.92 0.02 190 / 0.25);
+  }
+
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    text-align: center;
+    cursor: default;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    padding: 0.4rem;
+    line-height: 1.2;
+  }
+
+  .bubble-appear {
+    animation: bubblePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes bubblePop {
+    from { opacity: 0; transform: scale(0.2); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .bubble:hover {
+    transform: scale(1.12);
+    z-index: 10;
+    box-shadow: 0 8px 24px oklch(0.60 0.10 185 / 0.35);
+  }
+
+  .bubble-xl {
+    background: linear-gradient(135deg, oklch(0.68 0.12 175), oklch(0.60 0.14 188));
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 18px oklch(0.60 0.12 180 / 0.3);
+  }
+
+  .bubble-lg {
+    background: linear-gradient(135deg, oklch(0.74 0.09 180), oklch(0.68 0.11 192));
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 3px 14px oklch(0.68 0.09 185 / 0.25);
+  }
+
+  .bubble-md {
+    background: linear-gradient(135deg, oklch(0.82 0.06 185), oklch(0.78 0.08 195));
+    color: oklch(0.28 0.06 185);
+    font-weight: 500;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 10px oklch(0.78 0.06 190 / 0.2);
+  }
+
+  .bubble-sm {
+    background: linear-gradient(135deg, oklch(0.90 0.04 190), oklch(0.86 0.05 198));
+    color: oklch(0.32 0.05 185);
+    font-weight: 500;
+    font-size: 0.78rem;
+    box-shadow: 0 2px 8px oklch(0.85 0.04 190 / 0.15);
+  }
+
+  .bubble-xs {
+    background: oklch(0.94 0.025 195);
+    color: oklch(0.40 0.04 190);
+    font-weight: 400;
+    font-size: 0.72rem;
+    box-shadow: 0 1px 5px oklch(0.90 0.02 195 / 0.1);
+  }
+
+  .bubble-logo {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .bubble-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 92%;
+  }
+
+  @media (max-width: 640px) {
+    .bubble-cloud-wrapper {
+      overflow: hidden;
+    }
+  }
+</style>

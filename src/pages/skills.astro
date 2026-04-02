@@ -1,39 +1,60 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import TagCloud from "../components/TagCloud.astro";
+import SkillBoard from "../components/SkillBoard.astro";
 
-const tags = [
-  { label: "C端增长", size: "xl" as const },
-  { label: "效果广告投放", size: "xl" as const },
-  { label: "订阅商业化", size: "xl" as const },
-  { label: "数据分析", size: "lg" as const },
-  { label: "A/B Testing", size: "lg" as const },
-  { label: "用户分层", size: "lg" as const },
-  { label: "出海增长", size: "lg" as const },
-  { label: "ROAS 优化", size: "md" as const },
-  { label: "eCPM 竞价", size: "md" as const },
-  { label: "Prompt Engineering", size: "md" as const },
-  { label: "ChatGPT", size: "sm" as const, logo: "/logos/chatgpt.svg" },
-  { label: "Claude", size: "sm" as const, logo: "/logos/claude.svg" },
-  { label: "豆包", size: "sm" as const, logo: "/logos/doubao.svg" },
-  { label: "Kimi", size: "sm" as const, logo: "/logos/kimi.svg" },
-  { label: "Figma", size: "sm" as const, logo: "/logos/figma.svg" },
-  { label: "Axure", size: "sm" as const, logo: "/logos/axure.svg" },
-  { label: "Sketch", size: "sm" as const, logo: "/logos/sketch.svg" },
-  { label: "Xmind", size: "sm" as const, logo: "/logos/xmind.svg" },
-  { label: "Visio", size: "sm" as const, logo: "/logos/visio.svg" },
-  { label: "JIRA", size: "sm" as const, logo: "/logos/jira.svg" },
-  { label: "HTML/CSS/JS", size: "xs" as const },
-  { label: "SQL", size: "xs" as const },
-  { label: "PMP", size: "xs" as const },
-  { label: "CET-6", size: "xs" as const },
+const categories = [
+  {
+    title: "核心能力",
+    icon: "🎯",
+    skills: [
+      { label: "C端增长", level: 5 },
+      { label: "效果广告投放", level: 5 },
+      { label: "订阅商业化", level: 5 },
+      { label: "出海增长", level: 4 },
+      { label: "数据分析", level: 4 },
+      { label: "A/B Testing", level: 4 },
+      { label: "用户分层", level: 4 },
+    ],
+  },
+  {
+    title: "AI 工具 & 能力",
+    icon: "🤖",
+    skills: [
+      { label: "ChatGPT", level: 5, logo: "/logos/chatgpt.svg" },
+      { label: "Claude", level: 5, logo: "/logos/claude.svg" },
+      { label: "Prompt Eng.", level: 4 },
+      { label: "豆包", level: 4, logo: "/logos/doubao.svg" },
+      { label: "Kimi", level: 4, logo: "/logos/kimi.svg" },
+    ],
+  },
+  {
+    title: "增长专项",
+    icon: "📈",
+    skills: [
+      { label: "ROAS 优化", level: 4 },
+      { label: "eCPM 竞价", level: 4 },
+      { label: "SQL", level: 3 },
+    ],
+  },
+  {
+    title: "设计 & 协作",
+    icon: "🛠",
+    skills: [
+      { label: "Figma", level: 4, logo: "/logos/figma.svg" },
+      { label: "Axure", level: 4, logo: "/logos/axure.svg" },
+      { label: "Xmind", level: 4, logo: "/logos/xmind.svg" },
+      { label: "JIRA", level: 4, logo: "/logos/jira.svg" },
+      { label: "Sketch", level: 3, logo: "/logos/sketch.svg" },
+      { label: "Visio", level: 3, logo: "/logos/visio.svg" },
+    ],
+  },
 ];
 ---
 
 <BaseLayout sideBarActiveItemID="skills">
   <div class="pb-12 mt-5">
     <div class="text-3xl font-bold mb-2">技能与工具</div>
-    <p class="text-base-content/60 mb-8">标签越大越深 = 越核心</p>
-    <TagCloud tags={tags} />
+    <p class="text-base-content/50 text-sm mb-8">进度条越长 = 越擅长</p>
+    <SkillBoard categories={categories} />
   </div>
 </BaseLayout>

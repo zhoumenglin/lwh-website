@@ -1,0 +1,214 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const works = [
+  {
+    id: "personal-site",
+    title: "AI 协作建站：从 0 到 1 的个人品牌站",
+    cover: "/works/site-cover.svg",
+    summary: "用 Claude 全程协作完成设计、开发、内容，非工程师背景下 100% AI 协作交付",
+    tools: ["Claude", "Astro", "Tailwind CSS", "Vercel"],
+    status: "已上线",
+    highlight: true,
+  },
+  {
+    id: "coming-soon-1",
+    title: "AI 增长实验看板",
+    cover: null,
+    summary: "基于 AI 的增长数据分析与实验管理工具",
+    tools: ["Claude", "React"],
+    status: "Roadmap",
+    highlight: false,
+  },
+  {
+    id: "coming-soon-2",
+    title: "Prompt 工作流模板库",
+    cover: null,
+    summary: "产品经理常用 Prompt 模板与自动化工作流",
+    tools: ["ChatGPT", "Claude"],
+    status: "Roadmap",
+    highlight: false,
+  },
+];
+---
+
+<BaseLayout sideBarActiveItemID="ai-lab">
+  <div class="pb-12 mt-5">
+    <div class="text-3xl font-bold mb-1">AI 实验室</div>
+    <p class="text-base-content/40 text-sm mb-10">用 AI 做出来的东西，是最好的能力证明</p>
+
+    <div class="lab-grid">
+      {works.map((work) => (
+        <a
+          href={work.highlight ? `/ai-lab/${work.id}` : undefined}
+          class:list={["lab-card", { "lab-card--active": work.highlight, "lab-card--soon": !work.highlight }]}
+        >
+          <div class="lab-card__cover">
+            {work.cover ? (
+              <img src={work.cover} alt={work.title} class="lab-card__img" />
+            ) : (
+              <div class="lab-card__placeholder">
+                <span>🧪</span>
+              </div>
+            )}
+            <span class:list={["lab-card__status", { "lab-card__status--live": work.status === "已上线" }]}>
+              {work.status}
+            </span>
+          </div>
+          <div class="lab-card__body">
+            <h3 class="lab-card__title">{work.title}</h3>
+            <p class="lab-card__summary">{work.summary}</p>
+            <div class="lab-card__tools">
+              {work.tools.map((t) => (
+                <span class="lab-card__tool">{t}</span>
+              ))}
+            </div>
+          </div>
+          {work.highlight && <span class="lab-card__arrow">→</span>}
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .lab-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .lab-card {
+    display: flex;
+    align-items: stretch;
+    gap: 1.25rem;
+    padding: 1rem;
+    border: 1px solid oklch(0.93 0.015 195 / 0.5);
+    border-radius: 0.85rem;
+    text-decoration: none;
+    transition: all 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+    position: relative;
+  }
+
+  .lab-card--active {
+    cursor: pointer;
+  }
+
+  .lab-card--active:hover {
+    background: oklch(0.97 0.012 190 / 0.6);
+    border-color: oklch(0.85 0.04 185 / 0.5);
+    box-shadow: 0 6px 24px oklch(0.80 0.05 190 / 0.15);
+    transform: translateY(-2px);
+  }
+
+  .lab-card--soon {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  .lab-card__cover {
+    position: relative;
+    width: 10rem;
+    min-height: 6.5rem;
+    flex-shrink: 0;
+    border-radius: 0.6rem;
+    overflow: hidden;
+    background: oklch(0.96 0.01 195 / 0.5);
+  }
+
+  .lab-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .lab-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: linear-gradient(135deg, oklch(0.96 0.015 190), oklch(0.94 0.02 200));
+  }
+
+  .lab-card__status {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    font-size: 0.58rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 1rem;
+    background: oklch(0.90 0.02 200 / 0.8);
+    color: oklch(0.50 0.03 200);
+    backdrop-filter: blur(4px);
+  }
+
+  .lab-card__status--live {
+    background: oklch(0.65 0.10 180 / 0.9);
+    color: #fff;
+  }
+
+  .lab-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .lab-card__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: oklch(0.30 0.03 200);
+    line-height: 1.35;
+  }
+
+  .lab-card__summary {
+    font-size: 0.78rem;
+    color: oklch(0.50 0.02 200);
+    line-height: 1.5;
+  }
+
+  .lab-card__tools {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-top: 0.2rem;
+  }
+
+  .lab-card__tool {
+    font-size: 0.6rem;
+    color: oklch(0.52 0.06 180);
+    background: oklch(0.95 0.02 185 / 0.5);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+  }
+
+  .lab-card__arrow {
+    align-self: center;
+    font-size: 0.85rem;
+    color: oklch(0.70 0.04 190);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .lab-card--active:hover .lab-card__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @media (max-width: 640px) {
+    .lab-card {
+      flex-direction: column;
+    }
+    .lab-card__cover {
+      width: 100%;
+      min-height: 8rem;
+    }
+  }
+</style>

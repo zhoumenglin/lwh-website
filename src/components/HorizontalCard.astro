@@ -2,13 +2,20 @@
 const { title, img, desc, url, badge, tags, target = "_blank" } = Astro.props;
 import { Image } from "astro:assets";
 const tag_url = url.split("/").slice(0, -1).join("/") + "/tag";
+
+const badgeColors: Record<string, string> = {
+  "商业化": "oklch(0.52 0.10 260)",
+  "增长": "oklch(0.50 0.10 180)",
+  "出海": "oklch(0.55 0.12 50)",
+  "工作流": "oklch(0.55 0.10 30)",
+  "AI 转型": "oklch(0.50 0.08 280)",
+};
+const badgeColor = badge ? (badgeColors[badge] || "oklch(0.52 0.08 180)") : "";
 ---
 
-<div
-  class="rounded-lg bg-base-100 hover:shadow-xl transition ease-in-out hover:scale-[102%]"
->
-  <a href={url} target={target}>
-    <div class="hero-content flex-col md:flex-row">
+<div class="card-row group">
+  <a href={url} target={target} class="block">
+    <div class="hero-content flex-col md:flex-row items-center">
       {
         img && (
           <Image
@@ -22,22 +29,20 @@ const tag_url = url.split("/").slice(0, -1).join("/") + "/tag";
         )
       }
       <div class="grow w-full">
-        <h1 class="text-xl font-bold">
-          {title}
-          {badge && <div class="badge badge-secondary mx-2">{badge}</div>}
-        </h1>
-        <p class="py-1 text-1xl">{desc}</p>
-        <div class="card-actions justify-end">
-          {
-            tags &&
-              tags.map((tag) => (
-                <a href={`${tag_url}/${tag}`} class="badge badge-outline">
-                  {tag}
-                </a>
-              ))
-          }
+        <div class="flex items-center gap-2 mb-0.5">
+          {badge && <span class="card-badge" style={`color: ${badgeColor}; border-left-color: ${badgeColor};`}>{badge}</span>}
+          <h1 class="text-base font-semibold text-base-content/80 leading-snug">{title}</h1>
         </div>
+        <p class="text-sm text-base-content/45 leading-relaxed">{desc}</p>
+        {tags && tags.length > 0 && (
+          <div class="card-tags-inline">
+            {tags.map((tag, i) => (
+              <><a href={`${tag_url}/${tag}`} class="card-tag-link">{tag}</a>{i < tags.length - 1 && <span class="card-tag-sep">·</span>}</>
+            ))}
+          </div>
+        )}
       </div>
+      <span class="card-row-arrow">›</span>
     </div>
   </a>
 </div>

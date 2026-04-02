@@ -1,0 +1,179 @@
+---
+// Page navigation order - must match sidebar menu order
+const pages = [
+  { path: '/', id: 'home' },
+  { path: '/projects', id: 'projects' },
+  { path: '/blog', id: 'blog' },
+  { path: '/skills', id: 'skills' },
+  { path: '/ai-lab', id: 'ai-lab' },
+  { path: '/cv', id: 'cv' },
+  { path: '/contact', id: 'contact' },
+];
+
+const { sideBarActiveItemID } = Astro.props;
+const currentIndex = pages.findIndex(p => p.id === sideBarActiveItemID);
+const prevPage = currentIndex > 0 ? pages[currentIndex - 1] : null;
+const nextPage = currentIndex < pages.length - 1 ? pages[currentIndex + 1] : null;
+---
+
+{/* Next page hint at bottom */}
+{nextPage && (
+  <div class="page-scroll-hint page-scroll-hint--next" data-href={nextPage.path}>
+    <span class="page-scroll-hint__arrow">↓</span>
+    <span class="page-scroll-hint__label">继续浏览</span>
+  </div>
+)}
+
+<script define:vars={{ prevPath: prevPage?.path || '', nextPath: nextPage?.path || '' }}>
+  document.addEventListener('astro:page-load', () => {
+    if (!prevPath && !nextPath) return;
+
+    let isNavigating = false;
+
+    function navigate(url, direction) {
+      if (isNavigating) return;
+      isNavigating = true;
+
+      const main = document.querySelector('main');
+      if (main) {
+        main.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        main.style.opacity = '0';
+        main.style.transform = direction === 'down' ? 'translateY(-30px)' : 'translateY(30px)';
+      }
+
+      setTimeout(() => {
+        window.location.href = url;
+      }, 250);
+    }
+
+    // Use IntersectionObserver on the bottom hint element
+    if (nextPath) {
+      const trigger = document.querySelector('.page-scroll-hint--next');
+      if (trigger) {
+        let hintVisible = false;
+        let hasScrolledAway = false; // true once user has scrolled hint OUT of view at least once
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              trigger.classList.add('visible');
+              hintVisible = true;
+            } else {
+              trigger.classList.remove('visible');
+              hintVisible = false;
+              hasScrolledAway = true; // user has seen content above, hint went away
+            }
+          });
+        }, { threshold: 0.3 });
+
+        // Delay observer start so it doesn't fire on initial render
+        setTimeout(() => {
+          observer.observe(trigger);
+        }, 800);
+
+        // When hint is visible AND user has scrolled away before, accumulate scroll → navigate
+        let accumulated = 0;
+        const threshold = window.innerHeight * 0.3;
+
+        window.addEventListener('wheel', (e) => {
+          if (!hintVisible || isNavigating) {
+            accumulated = 0;
+            return;
+          }
+          // Only allow navigation if the hint was NOT visible on initial load,
+          // OR user has scrolled it out of view and back
+          if (!hasScrolledAway) {
+            // Page is short, hint visible from start — require more scroll
+            if (e.deltaY > 0) {
+              accumulated += e.deltaY;
+              if (accumulated >= window.innerHeight * 0.6) {
+                navigate(nextPath, 'down');
+              }
+            }
+            return;
+          }
+          if (e.deltaY > 0) {
+            accumulated += e.deltaY;
+            if (accumulated >= threshold) {
+              navigate(nextPath, 'down');
+            }
+          }
+        }, { passive: true });
+      }
+    }
+
+    // For going up: wheel overscroll at top
+    if (prevPath) {
+      let topAccumulated = 0;
+      window.addEventListener('wheel', (e) => {
+        if (isNavigating) return;
+        if (e.deltaY < 0 && window.scrollY <= 0) {
+          topAccumulated += Math.abs(e.deltaY);
+          if (topAccumulated > 120) {
+            navigate(prevPath, 'up');
+          }
+        } else {
+          topAccumulated = 0;
+        }
+      }, { passive: true });
+    }
+
+    // Touch support
+    let touchStartY = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (isNavigating) return;
+      const diff = touchStartY - e.changedTouches[0].clientY;
+
+      if (diff > 80 && nextPath) {
+        const trigger = document.querySelector('.page-scroll-hint--next');
+        if (trigger) {
+          const rect = trigger.getBoundingClientRect();
+          if (rect.top < window.innerHeight) navigate(nextPath, 'down');
+        }
+      } else if (diff < -80 && prevPath && window.scrollY <= 0) {
+        navigate(prevPath, 'up');
+      }
+    }, { passive: true });
+  });
+</script>
+
+<style>
+  .page-scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1.5rem 0 1rem;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .page-scroll-hint.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .page-scroll-hint__arrow {
+    font-size: 1.25rem;
+    color: oklch(0.65 0.04 195);
+    animation: bounce-arrow 1.5s ease-in-out infinite;
+  }
+
+  .page-scroll-hint__label {
+    font-size: 0.75rem;
+    color: oklch(0.60 0.03 195);
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes bounce-arrow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+</style>

@@ -3,15 +3,16 @@ interface Props {
   title: string;
   summary: string;
   colorClass: string;
+  accentColor?: string;
   details: string[];
 }
-const { title, summary, colorClass, details } = Astro.props;
+const { title, summary, colorClass, accentColor, details } = Astro.props;
 ---
 
-<div class="collapse collapse-arrow bg-base-200 mb-3">
+<div class="collapse collapse-arrow bg-base-200 mb-3" style={accentColor ? `border-left: 3px solid ${accentColor};` : ''}>
   <input type="checkbox" />
   <div class="collapse-title">
-    <div class:list={["font-semibold", colorClass]}>{title}</div>
+    <div class="font-semibold" style={accentColor ? `color: ${accentColor};` : 'color: var(--fallback-p, oklch(0.55 0.10 180));'}>{title}</div>
     <p class="text-sm text-base-content/60 mt-1">{summary}</p>
   </div>
   <div class="collapse-content">

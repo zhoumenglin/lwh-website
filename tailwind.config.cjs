@@ -6,8 +6,19 @@ module.exports = {
 	},
 	plugins: [require("@tailwindcss/typography"),require("daisyui")],
 	daisyui: {
-		themes: true, // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
-		darkTheme: "dark", // name of one of the included themes for dark mode
-		logs: false, // Shows info about daisyUI version and used config in the console when building your CSS
+		themes: [
+			{
+				pastel: {
+					...require("daisyui/src/theming/themes")["pastel"],
+					"primary": "#6bbaa7",
+					"primary-content": "#ffffff",
+					"secondary": "#89c4b8",
+					"accent": "#4da692",
+					"neutral": "#5ea0a0",
+				},
+			},
+		],
+		darkTheme: "dark",
+		logs: false,
 	  }
 }

@@ -1,12 +1,59 @@
 ---
 const { sideBarActiveItemID } = Astro.props;
-const activeClass = "bg-base-300";
+const activeClass = "sidebar-active";
+
+const items = [
+  { id: 'home', href: '/', label: '首页', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' },
+  { id: 'projects', href: '/projects', label: '项目经历', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>' },
+  { id: 'blog', href: '/blog', label: 'AI 洞察', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>' },
+  { id: 'skills', href: '/skills', label: '技能', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' },
+  { id: 'ai-lab', href: '/ai-lab', label: 'AI 实验室', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>' },
+  { id: 'cv', href: '/cv', label: '简历', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>' },
+  { id: 'contact', href: '/contact', label: '联系方式', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>' },
+];
 ---
 <ul class="menu grow shrink menu-md overflow-y-auto">
-  <li><a id="home" class={sideBarActiveItemID === "home" ? activeClass : ""} href="/">首页</a></li>
-  <li><a id="projects" class={sideBarActiveItemID === "projects" ? activeClass : ""} href="/projects">项目经历</a></li>
-  <li><a id="blog" class={sideBarActiveItemID === "blog" ? activeClass : ""} href="/blog">AI 洞察</a></li>
-  <li><a id="skills" class={sideBarActiveItemID === "skills" ? activeClass : ""} href="/skills">技能</a></li>
-  <li><a id="cv" class={sideBarActiveItemID === "cv" ? activeClass : ""} href="/cv">简历</a></li>
-  <li><a id="contact" class={sideBarActiveItemID === "contact" ? activeClass : ""} href="/contact">联系方式</a></li>
+  {items.map(item => (
+    <li>
+      <a
+        id={item.id}
+        data-page-id={item.id}
+        class={`sidebar-link ${sideBarActiveItemID === item.id ? activeClass : ""}`}
+        href={item.href}
+      >
+        <span class="sidebar-icon" set:html={item.icon} />
+        {item.label}
+      </a>
+    </li>
+  ))}
 </ul>
+
+<script>
+  // Sync sidebar active state after persist navigation
+  const pageMap: Record<string, string> = {
+    '/': 'home',
+    '/projects': 'projects',
+    '/blog': 'blog',
+    '/skills': 'skills',
+    '/ai-lab': 'ai-lab',
+    '/cv': 'cv',
+    '/contact': 'contact',
+  };
+
+  function syncSidebar() {
+    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    const activeId = pageMap[path];
+    if (!activeId) return;
+
+    document.querySelectorAll('[data-page-id]').forEach(el => {
+      if (el.getAttribute('data-page-id') === activeId) {
+        el.classList.add('sidebar-active');
+      } else {
+        el.classList.remove('sidebar-active');
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', syncSidebar);
+  document.addEventListener('astro:after-swap', syncSidebar);
+</script>

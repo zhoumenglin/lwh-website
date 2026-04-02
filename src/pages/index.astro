@@ -1,70 +1,182 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
+import createSlug from "../lib/createSlug";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-const last3Posts = posts.slice(0, 3);
+// Priority order: core expertise first
+const priorityOrder: Record<string, number> = {
+  "商业化": 1,
+  "增长": 2,
+  "出海": 3,
+  "工作流": 4,
+  "AI 转型": 5,
+};
+
+const posts = (await getCollection("blog")).sort((a, b) => {
+  const pa = priorityOrder[a.data.badge || ""] || 99;
+  const pb = priorityOrder[b.data.badge || ""] || 99;
+  if (pa !== pb) return pa - pb;
+  return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+});
+
+const badgeAccents: Record<string, { color: string; bg: string }> = {
+  "商业化": { color: "oklch(0.48 0.10 260)", bg: "oklch(0.94 0.02 260 / 0.35)" },
+  "增长": { color: "oklch(0.48 0.10 180)", bg: "oklch(0.94 0.02 185 / 0.4)" },
+  "出海": { color: "oklch(0.52 0.10 50)", bg: "oklch(0.95 0.02 50 / 0.35)" },
+  "工作流": { color: "oklch(0.50 0.10 30)", bg: "oklch(0.95 0.02 30 / 0.3)" },
+  "AI 转型": { color: "oklch(0.48 0.08 280)", bg: "oklch(0.94 0.02 280 / 0.3)" },
+};
 ---
 
 <BaseLayout sideBarActiveItemID="home">
   <div class="pb-12 mt-5">
-    <div class="text-center py-8 hero-gradient">
-      <div class="avatar mb-4">
-        <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 mx-auto">
+    <div class="text-center hero-gradient">
+      <div class="avatar mb-6">
+        <div class="w-20 rounded-full ring-2 ring-accent/30 ring-offset-base-100 ring-offset-2 mx-auto">
           <img src="/profile.jpg" alt="李文慧" />
         </div>
       </div>
-      <p class="text-sm text-base-content/60">你好，我是</p>
-      <h1 class="text-4xl font-bold mt-2">李文慧</h1>
-      <p class="text-lg mt-4 leading-relaxed">
-        6年 C 端增长 + 商业化实战经验<br/>
-        正在将增长方法论带入 AI 产品赛道
+      <h1 class="text-4xl font-bold tracking-wide shimmer-text"><span class="inline-block" style="filter: none; -webkit-text-fill-color: initial; background: none; -webkit-background-clip: initial; background-clip: initial;">🍐</span>梨贝拉</h1>
+      <p class="text-base mt-4 tracking-widest">
+        <span style="color: oklch(0.55 0.10 50);">效果广告</span>
+        <span class="text-base-content/25"> ｜ </span>
+        <span style="color: oklch(0.50 0.10 260);">订阅商业化</span>
+        <span class="text-base-content/25"> ｜ </span>
+        <span style="color: oklch(0.50 0.10 180);">出海增长</span>
       </p>
-      <div class="flex items-center justify-center gap-2 mt-3 text-sm text-base-content/50 flex-wrap">
-        <div class="flex items-center gap-1">
-          <img src="/logos/pdd.svg" alt="拼多多" class="w-4 h-4" />
-          <span>拼多多/TEMU</span>
-        </div>
-        <span>·</span>
-        <div class="flex items-center gap-1">
-          <img src="/logos/meitu.svg" alt="美图" class="w-4 h-4" />
-          <span>美图秀秀</span>
-        </div>
-        <span>·</span>
-        <div class="flex items-center gap-1">
-          <img src="/logos/luckin.svg" alt="瑞幸" class="w-4 h-4" />
-          <span>瑞幸咖啡</span>
-        </div>
-      </div>
-      <div class="flex gap-2 justify-center mt-4 flex-wrap">
-        <span class="badge badge-primary badge-outline">效果广告</span>
-        <span class="badge badge-primary badge-outline">订阅商业化</span>
-        <span class="badge badge-primary badge-outline">出海增长</span>
-      </div>
-      <div class="flex gap-3 justify-center mt-6">
-        <a href="/contact" class="btn btn-primary btn-sm">联系我</a>
-        <a href="/cv" class="btn btn-outline btn-sm">查看简历</a>
+      <p class="text-sm mt-5 text-base-content/40 leading-relaxed max-w-md mx-auto">
+        6年+ C端增长与商业化实战，前拼多多/TEMU · 美图秀秀 · 瑞幸咖啡<br/>
+        打造AI时代的增长飞轮
+      </p>
+      <div class="flex gap-4 justify-center mt-8">
+        <a href="/contact" class="btn btn-sm gap-1 hero-btn hero-btn-primary">联系我 <span class="text-xs">→</span></a>
+        <a href="/cv" class="btn btn-sm btn-ghost gap-1 hero-btn">查看简历 <span class="text-xs">→</span></a>
       </div>
     </div>
   </div>
 
-  <div>
-    <div class="text-2xl font-bold mb-4">最新 AI 洞察</div>
-    {last3Posts.map((post) => (
-      <>
-        <HorizontalCard
-          title={post.data.title}
-          img={post.data.heroImage}
-          desc={post.data.description}
-          url={"/blog/" + (post.slug || post.id)}
-          badge={post.data.badge}
-          tags={post.data.tags}
-        />
-        <div class="divider my-0" />
-      </>
-    ))}
+  <div class="home-sections">
+    <!-- AI 洞察 -->
+    <div class="home-section">
+      <div class="home-section__header">
+        <h2 class="home-section__title">AI 洞察</h2>
+        <a href="/blog" class="home-section__more">全部 →</a>
+      </div>
+      <div class="home-insights">
+        {posts.map((post, i) => (
+          <a href={"/blog/" + createSlug(post.data.title, post.slug)} class="home-insight-item">
+            <span class="home-insight-num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="home-insight-badge" style={`color: ${badgeAccents[post.data.badge || ""]?.color || ""}; background: ${badgeAccents[post.data.badge || ""]?.bg || ""};`}>{post.data.badge}</span>
+            <span class="home-insight-title">{post.data.title}</span>
+            <span class="home-insight-arrow">→</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- AI 实验室 -->
+    <div class="home-section">
+      <div class="home-section__header">
+        <h2 class="home-section__title">AI 实验室</h2>
+        <a href="/ai-lab" class="home-section__more">全部 →</a>
+      </div>
+      <div class="home-carousel" id="home-carousel">
+        <button class="carousel-arrow carousel-arrow--left" id="carousel-prev" aria-label="上一个">‹</button>
+        <button class="carousel-arrow carousel-arrow--right" id="carousel-next" aria-label="下一个">›</button>
+        <div class="home-carousel__track" id="home-carousel-track">
+          <a href="/ai-lab/personal-site" class="home-carousel__slide">
+            <div class="home-lab-card__cover">
+              <img src="/works/site-cover.svg" alt="AI 协作建站" />
+            </div>
+            <div class="home-lab-card__body">
+              <span class="home-lab-card__status">已上线</span>
+              <h3 class="home-lab-card__title">AI 协作建站</h3>
+              <p class="home-lab-card__desc">零代码基础，全程 AI 协作完成设计、开发、内容</p>
+              <div class="home-lab-card__tools">
+                <span>Claude</span><span>Astro</span><span>Vercel</span>
+              </div>
+            </div>
+          </a>
+          <div class="home-carousel__slide home-carousel__slide--soon">
+            <div class="home-lab-card__cover home-lab-card__cover--placeholder"><span>📈</span></div>
+            <div class="home-lab-card__body">
+              <span class="home-lab-card__status home-lab-card__status--soon">筹备中</span>
+              <h3 class="home-lab-card__title">AI 增长实验看板</h3>
+              <p class="home-lab-card__desc">基于 AI 的增长数据分析与实验管理工具</p>
+              <div class="home-lab-card__tools"><span>Claude</span><span>React</span></div>
+            </div>
+          </div>
+          <div class="home-carousel__slide home-carousel__slide--soon">
+            <div class="home-lab-card__cover home-lab-card__cover--placeholder"><span>📝</span></div>
+            <div class="home-lab-card__body">
+              <span class="home-lab-card__status home-lab-card__status--soon">筹备中</span>
+              <h3 class="home-lab-card__title">Prompt 工作流模板库</h3>
+              <p class="home-lab-card__desc">产品经理常用 Prompt 模板与自动化工作流</p>
+              <div class="home-lab-card__tools"><span>ChatGPT</span><span>Claude</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="home-carousel__dots" id="home-carousel-dots">
+          <span class="home-carousel__dot active" data-index="0"></span>
+          <span class="home-carousel__dot" data-index="1"></span>
+          <span class="home-carousel__dot" data-index="2"></span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <script is:inline>
+    document.addEventListener('astro:page-load', function() {
+      var track = document.getElementById('home-carousel-track');
+      var dots = document.querySelectorAll('#home-carousel-dots .home-carousel__dot');
+      var prevBtn = document.getElementById('carousel-prev');
+      var nextBtn = document.getElementById('carousel-next');
+      if (!track || dots.length === 0) return;
+
+      var current = 0;
+      var total = dots.length;
+      var timer;
+
+      function goTo(index) {
+        current = ((index % total) + total) % total;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dots.forEach(function(d, i) {
+          if (i === current) d.classList.add('active');
+          else d.classList.remove('active');
+        });
+      }
+
+      function startAuto() {
+        timer = setInterval(function() { goTo(current + 1); }, 4000);
+      }
+
+      function resetAuto() {
+        clearInterval(timer);
+        startAuto();
+      }
+
+      dots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+          goTo(parseInt(dot.getAttribute('data-index') || '0'));
+          resetAuto();
+        });
+      });
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+          goTo(current - 1);
+          resetAuto();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+          goTo(current + 1);
+          resetAuto();
+        });
+      }
+
+      startAuto();
+    });
+  </script>
 </BaseLayout>

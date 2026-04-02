@@ -1,51 +1,282 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import TimeLineElement from "../components/cv/TimeLine.astro";
 ---
 
 <BaseLayout sideBarActiveItemID="cv">
-  <div class="pb-12 mt-5">
-    <div class="text-3xl font-bold mb-2">简历</div>
-    <p class="text-base-content/60 mb-6">李文慧 · AI 产品经理（商业化/增长方向）</p>
+  <div class="pb-12 mt-5 cv-page">
+    <div class="text-3xl font-bold mb-1">简历</div>
+    <p class="text-base-content/40 text-sm mb-10">梨贝拉 · AI 产品经理（商业化 / 增长方向）</p>
 
-    <div class="mb-8">
-      <div class="text-2xl font-bold mb-3">个人优势</div>
-      <ul class="list-disc list-inside space-y-2 text-sm">
-        <li><strong>从业背景：</strong>6年+互联网产品经理工作经历，在C端增长、效果广告投放（Facebook Ads/ROAS优化）、订阅制商业化、出海增长等领域有丰富实操经验。曾主导会员体系从0到1搭建（付费收入提升40%+）、管理日花费万美元级广告投放（ROAS稳定100%+）、搭建订阅中台（新产品接入周期缩短50%）。</li>
-        <li><strong>专业优势：</strong>有从0到1的海外用户增长经验（TEMU欧洲区），有从0到1搭建并落地会员/订阅体系的完整经验（美图秀秀），数据分析和洞察力强，善于基于数据构建A/B测试实验体系。</li>
-        <li><strong>AI产品认知：</strong>持续关注AI行业发展，深度理解大模型、AI Agent、多模态等核心技术对产品形态和商业模式的影响；熟悉国内外主流AI产品的产品逻辑和变现策略。</li>
-        <li><strong>综合素养：</strong>共情力强，擅长用户痛点挖掘与需求洞察；带过4-6人团队，跨部门沟通和资源协调能力强；责任心和执行力强，强结果导向。</li>
-      </ul>
-    </div>
+    <!-- 个人优势 -->
+    <section class="cv-section">
+      <h2 class="cv-section__title">个人优势</h2>
+      <div class="cv-tags">
+        <div class="cv-highlight-card cv-highlight-card--mint">
+          <span class="cv-highlight-card__label">从业背景</span>
+          <span class="cv-highlight-card__text">6年+ C端增长 · 效果广告 · 订阅商业化 · 出海增长</span>
+        </div>
+        <div class="cv-highlight-card cv-highlight-card--amber">
+          <span class="cv-highlight-card__label">核心成果</span>
+          <span class="cv-highlight-card__text">付费收入 +40% · 日花费 $10K+ ROAS 100%+ · 中台接入周期 -50%</span>
+        </div>
+        <div class="cv-highlight-card cv-highlight-card--indigo">
+          <span class="cv-highlight-card__label">AI 认知</span>
+          <span class="cv-highlight-card__text">深度体验主流 AI 产品，理解 Token 经济学、Prompt 工程与 AI 产品商业化逻辑</span>
+        </div>
+        <div class="cv-highlight-card cv-highlight-card--coral">
+          <span class="cv-highlight-card__label">综合素养</span>
+          <span class="cv-highlight-card__text">4-6人团队管理 · 跨部门协调 · 数据驱动 · 强结果导向</span>
+        </div>
+      </div>
+    </section>
 
-    <div class="mb-8">
-      <div class="text-2xl font-bold mb-3">工作经历</div>
-      <TimeLineElement title="拼多多 & TEMU · 产品经理" subtitle="2022.09 - 2025.08">
-        C端增长产品经理。国内业务负责搜索场景全链路功能建设；海外业务带领4-6人团队负责TEMU欧洲区Facebook广告投放策略、活动玩法与用户转化体系。连续三年绩效优秀。
-      </TimeLineElement>
-      <TimeLineElement title="美图秀秀 · 产品经理" subtitle="2020.07 - 2022.09">
-        影像商业产品部产品经理，主导美图秀秀APP「会员体系」从0到1搭建及订阅中台建设。连续两年绩效A，获「优秀员工」称号。
-      </TimeLineElement>
-      <TimeLineElement title="瑞幸咖啡 · 产品经理" subtitle="2019.04 - 2020.06">
-        负责瑞幸咖啡APP营销体系搭建（营销系统、订单系统）和付费会员体系设计。年度绩效A，获「优秀员工」称号。
-      </TimeLineElement>
-    </div>
+    <!-- 转型说明 -->
+    <section class="cv-section">
+      <div class="cv-bridge">
+        <p class="cv-bridge__text">我的背景是 C 端增长和商业化，不是 AI 技术。但 AI 产品当前最紧迫的问题——订阅怎么设计、广告模型怎么跑通、海外市场怎么做——恰好是我过去 6 年在做的事。以下经历是我转型 AI 产品经理的基础。</p>
+      </div>
+    </section>
 
-    <div class="mb-8">
-      <div class="text-2xl font-bold mb-3">教育背景</div>
-      <TimeLineElement title="太原理工大学（211）" subtitle="2015.09 - 2019.07">
-        软件工程专业 · 本科（学士）
-      </TimeLineElement>
-    </div>
+    <!-- 工作经历 -->
+    <section class="cv-section">
+      <h2 class="cv-section__title">工作经历</h2>
+      <div class="cv-exp-list">
 
-    <div class="mb-8">
-      <div class="text-2xl font-bold mb-3">技能证书</div>
-      <ul class="list-disc list-inside space-y-1 text-sm">
-        <li><strong>专业水平：</strong>PMP项目管理证书、教师资格证（高中英语）</li>
-        <li><strong>语言水平：</strong>CET-6，良好的英语听说读写能力</li>
-        <li><strong>计算机水平：</strong>Office（计算机二级）、网络技术（计算机三级），熟练使用Axure、Sketch、Figma、Xmind、Visio等原型工具及JIRA、Project等项目管理工具</li>
-        <li><strong>AI工具：</strong>熟练使用ChatGPT/Claude/豆包/Kimi等AI助手；了解Prompt Engineering方法论；关注AI Agent、多模态等前沿技术方向</li>
-      </ul>
+        <div class="cv-exp" style="border-left-color: oklch(0.62 0.12 180);">
+          <div class="cv-exp__header">
+            <h3 class="cv-exp__company">拼多多 & TEMU</h3>
+            <span class="cv-exp__period">2022.09 - 2025.08</span>
+          </div>
+          <p class="cv-exp__role">C端增长产品经理 · 搜索增长 & 欧区广告投放</p>
+          <p class="cv-exp__desc">国内负责搜索全链路功能建设；海外带领 4-6 人团队负责 TEMU 欧洲区 Facebook 广告投放、活动玩法与用户转化。历年绩效优秀，主导项目多次获得业务线最佳实践。</p>
+        </div>
+
+        <div class="cv-exp" style="border-left-color: oklch(0.58 0.12 260);">
+          <div class="cv-exp__header">
+            <h3 class="cv-exp__company">美图秀秀</h3>
+            <span class="cv-exp__period">2020.07 - 2022.09</span>
+          </div>
+          <p class="cv-exp__role">影像商业产品经理 · 会员体系从 0 到 1 & 订阅中台</p>
+          <p class="cv-exp__desc">主导会员体系搭建及订阅中台建设，付费收入提升 40%+。连续两年绩效 A，团队中唯一获「优秀员工」的产品经理。</p>
+        </div>
+
+        <div class="cv-exp" style="border-left-color: oklch(0.60 0.12 45);">
+          <div class="cv-exp__header">
+            <h3 class="cv-exp__company">瑞幸咖啡</h3>
+            <span class="cv-exp__period">2019.04 - 2020.06</span>
+          </div>
+          <p class="cv-exp__role">产品经理 · 营销体系 & 付费会员</p>
+          <p class="cv-exp__desc">负责 APP 营销体系搭建与付费会员体系设计。入职首年即获年度绩效 A。</p>
+        </div>
+
+        <div class="cv-exp cv-exp--gap" style="border-left-color: oklch(0.70 0.06 190);">
+          <div class="cv-exp__header">
+            <h3 class="cv-exp__company">Career Break</h3>
+            <span class="cv-exp__period">2025.09 - 至今</span>
+          </div>
+          <p class="cv-exp__role">半月板手术康复 · AI 产品方向准备</p>
+          <p class="cv-exp__desc">因半月板撕裂进行手术及康复。期间系统研究 AI 产品的商业化模式、深度体验主流 AI 产品，并完成本站的 AI 协作建设，为转型 AI 产品经理做准备。</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 教育背景 & 证书 -->
+    <div class="cv-bottom-grid">
+      <section class="cv-section">
+        <h2 class="cv-section__title">教育背景</h2>
+        <div class="cv-edu">
+          <h3 class="cv-edu__school">太原理工大学（211）</h3>
+          <p class="cv-edu__detail">软件工程 · 本科 · 2015 - 2019</p>
+        </div>
+      </section>
+
+      <section class="cv-section">
+        <h2 class="cv-section__title">证书 & 语言</h2>
+        <div class="cv-cert-list">
+          <span class="cv-cert">PMP</span>
+          <span class="cv-cert">教师资格证</span>
+          <span class="cv-cert">CET-6</span>
+          <span class="cv-cert">计算机二级</span>
+          <span class="cv-cert">计算机三级</span>
+        </div>
+      </section>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .cv-page {
+    max-width: 48rem;
+  }
+
+  .cv-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .cv-section__title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: oklch(0.55 0.08 180);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1.5px solid oklch(0.92 0.03 190 / 0.5);
+  }
+
+  /* 个人优势卡片 */
+  .cv-tags {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .cv-tags {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cv-highlight-card {
+    background: oklch(0.97 0.012 190 / 0.5);
+    border: 1px solid oklch(0.93 0.02 190 / 0.4);
+    border-radius: 0.75rem;
+    padding: 1rem 1.15rem;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .cv-highlight-card:hover {
+    box-shadow: 0 4px 16px oklch(0.80 0.05 190 / 0.15);
+  }
+
+  .cv-highlight-card__label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+  }
+
+  .cv-highlight-card--mint .cv-highlight-card__label { color: oklch(0.50 0.08 180); }
+  .cv-highlight-card--amber .cv-highlight-card__label { color: oklch(0.55 0.12 55); }
+  .cv-highlight-card--indigo .cv-highlight-card__label { color: oklch(0.48 0.10 260); }
+  .cv-highlight-card--coral .cv-highlight-card__label { color: oklch(0.55 0.10 30); }
+
+  .cv-highlight-card--mint { border-color: oklch(0.85 0.04 180 / 0.4); }
+  .cv-highlight-card--amber { border-color: oklch(0.88 0.04 60 / 0.35); }
+  .cv-highlight-card--indigo { border-color: oklch(0.85 0.04 260 / 0.3); }
+  .cv-highlight-card--coral { border-color: oklch(0.88 0.04 30 / 0.3); }
+
+  .cv-highlight-card__text {
+    font-size: 0.82rem;
+    color: oklch(0.35 0.02 200);
+    line-height: 1.5;
+  }
+
+  /* 桥接说明 */
+  .cv-bridge {
+    background: linear-gradient(135deg, oklch(0.97 0.015 260 / 0.4), oklch(0.96 0.012 280 / 0.3));
+    border-left: 3px solid oklch(0.55 0.10 260);
+    border-radius: 0 0.75rem 0.75rem 0;
+    padding: 1rem 1.25rem;
+  }
+
+  .cv-bridge__text {
+    font-size: 0.82rem;
+    color: oklch(0.38 0.03 260);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* 工作经历 */
+  .cv-exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .cv-exp {
+    padding: 1.15rem 1.25rem;
+    border-left: 3px solid oklch(0.72 0.10 180);
+    background: oklch(0.98 0.008 195 / 0.3);
+    border-radius: 0 0.75rem 0.75rem 0;
+    transition: background 0.3s ease;
+  }
+
+  .cv-exp:hover {
+    background: oklch(0.97 0.012 190 / 0.5);
+  }
+
+  .cv-exp__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.25rem;
+  }
+
+  .cv-exp__company {
+    font-size: 1rem;
+    font-weight: 600;
+    color: oklch(0.30 0.03 200);
+  }
+
+  .cv-exp__period {
+    font-size: 0.72rem;
+    color: oklch(0.55 0.03 195);
+    flex-shrink: 0;
+  }
+
+  .cv-exp__role {
+    font-size: 0.78rem;
+    color: oklch(0.50 0.06 180);
+    margin-bottom: 0.5rem;
+  }
+
+  .cv-exp__desc {
+    font-size: 0.8rem;
+    color: oklch(0.45 0.02 200);
+    line-height: 1.65;
+  }
+
+  /* 底部两栏 */
+  .cv-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .cv-bottom-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cv-edu__school {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: oklch(0.30 0.03 200);
+  }
+
+  .cv-edu__detail {
+    font-size: 0.8rem;
+    color: oklch(0.50 0.03 195);
+    margin-top: 0.25rem;
+  }
+
+  /* 证书标签 */
+  .cv-cert-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .cv-cert {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    background: oklch(0.95 0.02 190 / 0.5);
+    color: oklch(0.45 0.05 185);
+    border: 1px solid oklch(0.90 0.03 190 / 0.4);
+  }
+</style>
