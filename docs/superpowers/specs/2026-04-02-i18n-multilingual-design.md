@@ -2,7 +2,7 @@
 
 ## Overview
 
-Add Chinese + English bilingual support to Bela Lee's portfolio site (Astro 4 + TailwindCSS + DaisyUI, deployed on Vercel). Includes automatic language detection via Vercel Edge Middleware and manual language switching.
+Add Chinese + English bilingual support to Bela Lee's portfolio site (Astro 4 + TailwindCSS + DaisyUI, deployed on Vercel). Includes automatic language detection via Astro middleware and manual language switching.
 
 ## Languages
 
@@ -17,7 +17,7 @@ All languages share one set of page templates. Language is determined by `Astro.
 
 ```
 src/pages/
-├── index.astro              → root, middleware redirects to /zh/ or /en/
+├── index.astro              → redirect-only page (detects lang, redirects to /zh/ or /en/)
 ├── [lang]/
 │   ├── index.astro
 │   ├── projects.astro
@@ -38,12 +38,15 @@ All URLs are prefixed: `/zh/projects`, `/en/projects`.
 ## Build Mode Change
 
 - Change Astro output from `static` to `hybrid`
-- Required for Vercel Edge Middleware support
-- Most pages remain statically generated (default), only middleware runs at edge
+- Required for Astro middleware support (language detection on first visit)
+- Most pages remain statically prerendered, only middleware + root redirect run server-side
+- Adapter changes from `@astrojs/vercel/static` to `@astrojs/vercel/serverless`
 
 ### astro.config.mjs changes
 
 ```js
+import vercel from "@astrojs/vercel/serverless";
+
 export default defineConfig({
   site: 'https://liwenhui.vercel.app',
   output: 'hybrid',
@@ -52,12 +55,12 @@ export default defineConfig({
   i18n: {
     locales: ['zh', 'en'],
     defaultLocale: 'zh',
-    routing: {
-      prefixDefaultLocale: true,
-    },
+    routing: 'manual',  // we handle routing ourselves via middleware
   },
 });
 ```
+
+Key: `routing: 'manual'` — disables Astro's built-in i18n redirects so our custom middleware has full control.
 
 ## Translation System
 
@@ -136,13 +139,13 @@ const { lang } = Astro.props;
 
 ### Layout chain
 
-`BaseLayout.astro` → extracts `lang` from URL → passes to `Header`, `SideBar`, `Footer`.
+`BaseLayout.astro` → extracts `lang` from URL → sets `<html lang="zh">` or `<html lang="en">` → passes `lang` to `Header`, `SideBar`, `Footer`.
 
 ### Language Switcher
 
 - Location: sidebar bottom
 - Shows current language flag/label, click to switch
-- Switching writes `lang` cookie (max-age 1 year) and navigates to equivalent path in other language
+- Switching writes `lang` cookie (`SameSite=Lax; Secure; Path=/; max-age=31536000`) and navigates to equivalent path in other language
 - Example: `/zh/projects` → click → set cookie `lang=en` → navigate `/en/projects`
 
 ## Blog Content
@@ -173,17 +176,37 @@ const allPosts = await getCollection('blog');
 const langPosts = allPosts.filter(post => post.id.startsWith(`${lang}/`));
 ```
 
-Slug extraction: strip the `zh/` or `en/` prefix for URL generation.
+### Slug Handling
 
-## Language Detection — Vercel Edge Middleware
+Blog post IDs will be like `zh/post-1`, `en/post-1`. When generating URLs:
+- Strip the language prefix from the ID to get the slug
+- Use `/${lang}/blog/${slug}` for the URL
+- In `[slug].astro`'s `getStaticPaths()`, explicitly map IDs to slugs to avoid double-prefix (`/zh/blog/zh/post-1`)
 
-### File: `middleware.ts` (project root)
+```ts
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => {
+    const [lang, ...slugParts] = post.id.split('/');
+    return {
+      params: { lang, slug: slugParts.join('/') },
+      props: { post },
+    };
+  });
+}
+```
+
+## Language Detection — Astro Middleware
+
+### File: `src/middleware.ts`
+
+Uses Astro's built-in middleware system — works both in local dev (`astro dev`) and production (Vercel).
 
 ### Priority Logic
 
 1. **Cookie `lang`** — user manually switched before → respect their choice
 2. **`Accept-Language` header** — browser/system language preference
-3. **`x-vercel-ip-country` header** — IP geolocation (CN/TW/HK/MO → zh, else → en)
+3. **`x-vercel-ip-country` header** — IP geolocation (CN/TW/HK/MO → zh, else → en). In local dev, this header is absent, so falls through to default.
 4. **Default: zh**
 
 When IP country and system language conflict, **system language wins** (priority 2 > priority 3).
@@ -191,50 +214,71 @@ When IP country and system language conflict, **system language wins** (priority
 ### Behavior
 
 - Request to `/` → 302 redirect to `/zh/` or `/en/` based on detection
+- Legacy unprefixed URLs (`/projects`, `/blog`, `/cv`, etc.) → 302 redirect to `/${detectedLang}/path`
 - Request to `/zh/...` or `/en/...` → pass through, no redirect
 - Cookie present → always use cookie value, skip detection
+- Static assets, `_astro/`, `favicon`, etc. → pass through
 
-### Implementation
+### Implementation Sketch
 
 ```ts
-// middleware.ts
-import { next } from '@vercel/edge';
+// src/middleware.ts
+import { defineMiddleware } from 'astro:middleware';
 
-export default function middleware(request: Request) {
-  const url = new URL(request.url);
-  const pathname = url.pathname;
+export const onRequest = defineMiddleware((context, next) => {
+  const { pathname } = context.url;
 
-  // Already on a language path — pass through
-  if (pathname.startsWith('/zh') || pathname.startsWith('/en')) {
+  // Skip assets and already-prefixed paths
+  if (pathname.startsWith('/zh') || pathname.startsWith('/en')
+      || pathname.startsWith('/_astro') || pathname.includes('.')) {
     return next();
   }
 
-  // Only redirect root and non-asset paths
-  if (pathname !== '/' && !pathname.startsWith('/api')) {
-    return next();
-  }
+  // Detect language
+  const cookieLang = parseCookie(context.request, 'lang');
+  const acceptLang = parseAcceptLanguage(context.request);
+  const ipCountry = context.request.headers.get('x-vercel-ip-country') || '';
+  const ipLang = ['CN', 'TW', 'HK', 'MO'].includes(ipCountry) ? 'zh' : 'en';
 
-  // 1. Check cookie
-  const cookieLang = getCookieLang(request);
-  if (cookieLang) {
-    return redirect(url, cookieLang);
-  }
+  const lang = cookieLang || acceptLang || ipLang || 'zh';
 
-  // 2. Check Accept-Language (system language)
-  const acceptLang = getAcceptLanguage(request);
-
-  // 3. Check IP country
-  const country = request.headers.get('x-vercel-ip-country') || '';
-  const ipLang = ['CN', 'TW', 'HK', 'MO'].includes(country) ? 'zh' : 'en';
-
-  // System language wins over IP
-  const lang = acceptLang || ipLang;
-
-  return redirect(url, lang);
-}
-
-export const config = { matcher: '/' };
+  // Redirect to prefixed path
+  const target = `/${lang}${pathname === '/' ? '/' : pathname}`;
+  return context.redirect(target, 302);
+});
 ```
+
+### Root `index.astro`
+
+The root `src/pages/index.astro` is a server-rendered redirect page (not prerendered). It serves as a fallback in case the middleware redirect doesn't fire:
+
+```astro
+---
+export const prerender = false;
+// Redirect handled by middleware; this is a safety net
+return Astro.redirect('/zh/');
+---
+```
+
+## SEO & Accessibility
+
+### `<html lang="">` attribute
+
+`BaseLayout.astro` dynamically sets `<html lang="${lang}">` based on current language.
+
+### Hreflang tags
+
+Each page includes alternate language links in `<head>`:
+
+```html
+<link rel="alternate" hreflang="zh" href="https://liwenhui.vercel.app/zh/projects" />
+<link rel="alternate" hreflang="en" href="https://liwenhui.vercel.app/en/projects" />
+<link rel="alternate" hreflang="x-default" href="https://liwenhui.vercel.app/zh/projects" />
+```
+
+### 404 Page
+
+`src/pages/[lang]/404.astro` — language-aware 404 page, shows "Page not found" in current language.
 
 ## Name Handling
 
@@ -253,21 +297,27 @@ export const config = { matcher: '/' };
 - **Bad**: "Was responsible for user acquisition strategy implementation and optimization"
 - **Vibe**: Confident but not boastful, specific but not dry
 
+## Legacy URL Redirects
+
+Old unprefixed URLs (`/projects`, `/blog/post-1`, `/cv`, etc.) are handled by the middleware — they redirect to `/${detectedLang}/path`. This ensures bookmarks and search engine indexed URLs continue to work.
+
 ## Scope Summary
 
 | Item | Action |
 |------|--------|
-| astro.config.mjs | Add i18n config, change to hybrid |
+| astro.config.mjs | Add i18n config, change to hybrid, switch to serverless adapter |
 | src/i18n/ | New — translation files + helper |
 | src/pages/ | Move all pages into [lang]/ dynamic route |
-| src/components/ | Add lang prop, use t() for all text |
+| src/pages/index.astro | Redirect-only page (server-rendered) |
+| src/middleware.ts | New — language detection + redirect |
+| src/components/ | Add lang prop, use t() for all text, set `<html lang>` |
 | src/content/blog/ | Reorganize into zh/ and en/ subdirs |
-| middleware.ts | New — language detection + redirect |
 | Language switcher | New component in sidebar |
 | Blog posts (5) | Translate to English |
+| SEO | hreflang tags, `<html lang>` attribute |
+| 404 page | Language-aware 404 |
 
 ## Out of Scope
 
-- SEO meta tags per language (can add later)
 - RSS feed per language (can add later)
 - Additional languages beyond zh/en
